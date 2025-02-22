@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 
-
+:root {
+  color-scheme: dark;
+}
 
 @layer base {
   :root {
@@ -34,6 +36,24 @@
     --chart-5: 27 87% 67%;
   }
 
+    body {
+    overflow-x: hidden;
+    overflow-y: auto;   /* Firefox */
+  }
+  
+  body::-webkit-scrollbar {
+    width: 8px; /* Make scrollbar thin */
+  }
+
+  body::-webkit-scrollbar-track {
+    background: hsl(var(--scrollbar-bg)); /* Background of the scrollbar track */
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--scrollbar-thumb)); /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Roundness of the scrollbar thumb */
+  }
+
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
@@ -59,6 +79,8 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --scrollbar-bg: 24 9.8% 10%;
+    --scrollbar-thumb: 142.1 70.6% 45.3%;
   }
 }
 

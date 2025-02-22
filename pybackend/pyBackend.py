@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from schema_processor import SchemaProcessor
 import google.generativeai as genai
 import re
 import json
 
 app = Flask(__name__)
+CORS(app)  # Allow all origins
 
 # Initialize Gemini API
 genai.configure(api_key="AIzaSyAQ2KATdbxds1YECAg-De56dFZbWYqgmgw")
@@ -191,11 +193,6 @@ def process_query():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-    
-    
-    
-    
-    
     
     
     

@@ -1,8 +1,5 @@
 from flask import Flask, request, jsonify
-import json
-from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
-import numpy as np
 from schema_processor import SchemaProcessor
 
 app = Flask(__name__)
@@ -10,17 +7,25 @@ app = Flask(__name__)
 @app.route('/process_schema', methods=['GET'])
 def process_schema():
     # schema_json = request.get_json()
+    # schema_json = {
+    # "tables": [
+    #     {
+    #         "name": "sales",
+    #         "columns": [
+    #             {"name": "id", "type": "int"},
+    #             {"name": "amount", "type": "decimal"}
+    #         ]
+    #     }
+    # ]
+# } 
     schema_json = {
-    "tables": [
-        {
-            "name": "sales",
-            "columns": [
-                {"name": "id", "type": "int"},
-                {"name": "amount", "type": "decimal"}
-            ]
-        }
-    ]
-}
+        "tables": [
+            {"name": "orders", "columns": ["order_id", "customer_id", "total_price", "order_date"]},
+            {"name": "customers", "columns": ["customer_id", "name", "email", "phone"]},
+            {"name": "products", "columns": ["product_id", "product_name", "price", "stock"]},
+            {"name": "sales", "columns": ["sale_id", "product_id", "quantity", "sale_date"]}
+        ]
+    }
     if not schema_json:
         return jsonify({"error": "Schema JSON is required"}), 400
     

@@ -1,5 +1,6 @@
 "use client";
 
+
 import { Button } from "@/components/ui/button";
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -64,6 +65,7 @@ const page = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
     </div>
   );
 };

@@ -10,7 +10,8 @@ class SchemaProcessor:
         """
         self.schema_json = schema_json
         self.tables = self._parse_schema()
-        self.bm25_index = self._create_bm25_index()
+        self.tokenized_corpus = self._create_tokenized_corpus()
+        self.bm25_index = BM25Okapi(self.tokenized_corpus)
         self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         self.table_embeddings = self._generate_table_embeddings()
 
@@ -28,16 +29,15 @@ class SchemaProcessor:
             tables.append(table_info)
         return tables
 
-    def _create_bm25_index(self):
+    def _create_tokenized_corpus(self):
         """
-        Create a BM25 index for fast keyword-based search.
+        Create a tokenized corpus for BM25 indexing.
         """
         corpus = [
             ' '.join([table['name']] + table['columns'])
             for table in self.tables
         ]
-        tokenized_corpus = [doc.split() for doc in corpus]
-        return BM25Okapi(tokenized_corpus)
+        return [doc.split() for doc in corpus]
 
     def _generate_table_embeddings(self):
         """
@@ -55,12 +55,10 @@ class SchemaProcessor:
         """
         processed_data = {
             'tables': self.tables,
-            'bm25_index': {
-                'corpus': self.bm25_index.corpus,
-                'idf': self.bm25_index.idf,
-                'doc_len': self.bm25_index.doc_len,
-                'avgdl': self.bm25_index.avgdl
-            },
+            'tokenized_corpus': self.tokenized_corpus,
+            'idf': self.bm25_index.idf,
+            'doc_len': self.bm25_index.doc_len,
+            'avgdl': self.bm25_index.avgdl,
             'table_embeddings': self.table_embeddings.tolist()
         }
         with open(file_path, 'w') as f:
@@ -76,11 +74,12 @@ class SchemaProcessor:
         
         processor = cls.__new__(cls)
         processor.tables = processed_data['tables']
+        processor.tokenized_corpus = processed_data['tokenized_corpus']
         processor.bm25_index = BM25Okapi(
-            processed_data['bm25_index']['corpus'],
-            idf=processed_data['bm25_index']['idf'],
-            doc_len=processed_data['bm25_index']['doc_len'],
-            avgdl=processed_data['bm25_index']['avgdl']
+            processed_data['tokenized_corpus'],
+            idf=processed_data['idf'],
+            doc_len=processed_data['doc_len'],
+            avgdl=processed_data['avgdl']
         )
         processor.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         processor.table_embeddings = np.array(processed_data['table_embeddings'])

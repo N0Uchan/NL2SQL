@@ -1,39 +1,37 @@
-// import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { Button } from '@/components/ui/button'
+import React, { useRef, useState } from 'react'
+import {motion,AnimatePresence} from 'framer-motion'
+
+const page = () => {
+  const fileInputRef = useRef(null);
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "application/json") {
+      setIsFileUploaded(true);
+    }
+  };
+
   return (
-    <div className=" font-[family-name:var(--font-geist-sans)]">
-      <main className="">
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-4">
-      {/* Top: JSON Schema Input */}
-      <div className="w-full max-w-3xl mb-4">
-        <label className="block text-lg font-semibold mb-2">Schema (JSON Format)</label>
-        <textarea
-          className="w-full h-40 bg-gray-800 text-white p-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Paste your schema here..."
-        ></textarea>
-      </div>
-      
-      {/* Middle: Placeholder for future content */}
-      <div className="w-full max-w-3xl flex-grow bg-gray-800 rounded-lg p-4 flex items-center justify-center border border-gray-700">
-        <p className="text-gray-400">(Content will be displayed here)</p>
-      </div>
-      
-      {/* Bottom: NL Query Input */}
-      <div className="w-full max-w-3xl mt-4">
-        <label className="block text-lg font-semibold mb-2">Enter your query</label>
-        <input
-          type="text"
-          className="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Type your query..."
-        />
-      </div>
+    <div className='flex flex-col size-full items-center justify-center '>
+      <div className='mb-4'>Get started by uploading your schema json</div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
+      <Button variant="outline" onClick={handleButtonClick}>Upload file</Button>
+      {isFileUploaded && <div className='mt-4'>File uploaded successfully!</div>}
     </div>
-        
-      </main>
-      <footer className="items-center justify-center">
-        
-      </footer>
-    </div>
-  );
+  )
 }
+
+export default page

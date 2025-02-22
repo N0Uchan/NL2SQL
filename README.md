@@ -1,3 +1,6 @@
+### Gemini API Key might hit token limit for free usage. If so, please replace key in pybackend/pyBackend.py , line 12.
+
+
 # Running Instructions:
 
 ## Install all dependencies:
@@ -13,6 +16,3 @@
 ```npm run dev```
 
 ## go to link localhost3000
-
-
-

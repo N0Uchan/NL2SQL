@@ -74,6 +74,10 @@ pre{
   background-color: transparent !important
 }
 
+pre span{
+  font-family: "Geist Mono" !important;
+}
+
 
 @layer base {
   * {

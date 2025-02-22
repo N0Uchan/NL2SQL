@@ -66,6 +66,13 @@
   font-family: "Geist"
 }
 
+#mono-font{
+  font-family: monospace !important;
+}
+
+pre{
+  background-color: transparent !important
+}
 
 
 @layer base {

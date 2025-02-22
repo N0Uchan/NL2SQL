@@ -1,87 +1,75 @@
 "use client";
-// import Image from "next/image";
-import { useState } from "react";
 
-export default function Home() {
-  const [jsonInput, setJsonInput] = useState("");
-  const [processedSchema, setProcessedSchema] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/process-schema", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ schema: jsonInput }),
-      });
+import { Button } from "@/components/ui/button";
+import React, { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send } from "lucide-react";
+import Chat from "@/components/main/Chat";
+import Output from "@/components/main/Output";
 
-      const data = await response.json();
-      setProcessedSchema(data.processed_schema);
-    } catch (error) {
-      console.error("Error processing schema:", error);
-    } finally {
-      setLoading(false);
-    }
+const page = () => {
+  const fileInputRef = useRef(null);
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
   };
-  return (
-    <div className=' font-[family-name:var(--font-geist-sans)]'>
-      <main className=''>
-        <div className='min-h-screen bg-gray-900 text-white flex items-center justify-center p-4'>
-          {!processedSchema ? (
-            // Show JSON input first
-            <div className='w-full max-w-3xl'>
-              <label className='block text-lg font-semibold mb-2'>
-                Schema (JSON Format)
-              </label>
-              <textarea
-                className='w-full h-40 bg-gray-800 text-white p-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                placeholder='Paste your schema here...'
-                value={jsonInput}
-                onChange={(e) => setJsonInput(e.target.value)}
-              ></textarea>
-              <button
-                className='mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold'
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                {loading ? "Processing..." : "Submit"}
-              </button>
-            </div>
-          ) : (
-            // Show processed schema and query UI
-            <div className='w-full max-w-6xl grid grid-cols-2 gap-4'>
-              {/* Left: Processed Schema */}
-              <div className='bg-gray-800 p-4 rounded-lg border border-gray-700'>
-                <h2 className='text-lg font-semibold mb-2'>Processed Schema</h2>
-                <pre className='text-gray-400 overflow-auto max-h-80'>
-                  {JSON.stringify(processedSchema, null, 2)}
-                </pre>
-              </div>
 
-              {/* Right: Content Box with Query */}
-              <div className='bg-gray-800 p-4 rounded-lg border border-gray-700 flex flex-col justify-between'>
-                <div className='flex-grow flex items-center justify-center'>
-                  <p className='text-gray-400'>
-                    (Content will be displayed here)
-                  </p>
-                </div>
-                <div className='mt-4'>
-                  <label className='block text-lg font-semibold mb-2'>
-                    Enter your query
-                  </label>
-                  <input
-                    type='text'
-                    className='w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                    placeholder='Type your query...'
-                  />
-                </div>
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    setIsFileUploaded(true);
+  };
+
+  return (
+    <div className="flex flex-col size-full items-center justify-center ">
+      <AnimatePresence>
+        {isFileUploaded === false && (
+          <>
+            <motion.div
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col absolute size-full items-center justify-center"
+            >
+              <div className="mb-4">
+                Get started by uploading your schema json
               </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              <Button variant="outline" onClick={handleButtonClick}>
+                Upload file
+              </Button>
+              {/* {isFileUploaded && <div className='mt-4'>File uploaded successfully!</div>} */}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isFileUploaded && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="size-full flex items-center justify-center"
+          >
+            <div className="flex items-center justify-center flex-col w-[50vw] h-full border-r-2 border-border relative" >
+              <Chat></Chat>
             </div>
-          )}
-        </div>
-      </main>
-      <footer className='items-center justify-center'></footer>
+            <div className="flex items-center justify-center flex-col w-[50vw] h-full" >
+              <Output></Output>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
-}
+};
+
+
+
+export default page;
